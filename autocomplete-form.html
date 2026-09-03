@@ -1,0 +1,76 @@
+<!--
+  TEST DOUBLE, not a deliverable of the assignment.
+
+  https://test.com/autocomplete-form does not exist, so the markup below is the HTML structure
+  given in the assignment PDF, verbatim (same ids, classes and copy), plus the minimum script
+  needed to make FR-01..FR-04 observable so the Playwright suite is genuinely executable.
+  Point the suite at the real application with BASE_URL and this file is never loaded.
+
+  Filtering mode: prefix match by default, match-anywhere with ?match=anywhere (FR-03).
+-->
+<html>
+<head><meta charset="utf-8"><title>Autocomplete Form</title></head>
+<body>
+  <div class="form-container">
+    <label for="input-field">Enter a value:</label>
+    <input type="text" id="input-field" placeholder="Type here...">
+    <ul class="suggestions">
+      <li>agile methodology</li>
+      <li>agile methodology process</li>
+      <li>agile methodology process testing</li>
+    </ul>
+    <button id="next-button">Next</button>
+    <span class="error-message">Error: Invalid input. Please select a valid suggestion.</span>
+    <div class="success-container">
+      <p>Success! Your response has been recorded.</p>
+    </div>
+  </div>
+
+<script>
+  const input = document.getElementById("input-field");
+  const next = document.getElementById("next-button");
+  const items = [...document.querySelectorAll("ul.suggestions li")];
+  const error = document.querySelector("span.error-message");
+  const success = document.querySelector("div.success-container");
+  const matchAnywhere = new URLSearchParams(location.search).get("match") === "anywhere";
+
+  error.hidden = true;
+  success.hidden = true;
+
+  const matches = (text, typed) =>
+    matchAnywhere ? text.includes(typed) : text.startsWith(typed);
+
+  const filter = () => {
+    const typed = input.value.toLowerCase();
+    items.forEach((li) => { li.hidden = !matches(li.textContent.toLowerCase(), typed); });
+  };
+
+  const closeList = () => items.forEach((li) => { li.hidden = true; });
+
+  input.addEventListener("input", () => { error.hidden = true; filter(); });
+
+  items.forEach((li) =>
+    li.addEventListener("click", () => { input.value = li.textContent; closeList(); })
+  );
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { input.value = ""; closeList(); error.hidden = true; }
+    if (e.key === "Enter") { submit(); }
+  });
+
+  next.addEventListener("click", submit);
+
+  async function submit() {
+    const valid = items.some((li) => li.textContent === input.value);
+    if (!valid) { error.hidden = false; success.hidden = true; return; }
+    const response = await fetch("/api/responses", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: input.value }),
+    });
+    error.hidden = response.ok;
+    success.hidden = !response.ok;
+  }
+</script>
+</body>
+</html>

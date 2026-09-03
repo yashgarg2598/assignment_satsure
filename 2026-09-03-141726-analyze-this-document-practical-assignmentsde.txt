@@ -1,0 +1,349 @@
+ ▐▛███▛█   Claude Code v2.1.259
+▝▜██████▀  Opus 5 · Claude Team
+  ▝▝ ▝▝    ~/Documents/Yash Personal/Prep/assignment_satsure
+
+
+❯ Analyze this document @"_Practical Assignment_SDET.pdf"                       
+  Now,Plan the below item properly. Ask mw questions rather than guessing.      
+                                                                                
+   >>  give me the separate files for all the points present in Practical       
+  Exercise section.                                                             
+                                                                                
+  Note below things:                                                            
+  1. Do not write exhaustive code/test cases                                    
+  2. Use as much as inbuilt libraries instead of writing custom logic           
+  3. Keep the asked things only.                                                
+  ⎿  Read _Practical Assignment_SDET.pdf (155KB)
+
+  Read 1 file, listed 1 directory, ran 8 shell commands (ctrl+o to expand)
+
+⏺ I've extracted the full assignment. The Practical Exercise section has 6
+  points: (1) top-10 risk-ranked scenarios, (2) compare the GET response against
+  FR-05 and list discrepancies, (3) ≥8 detailed test cases (UI + API), (4)
+  Playwright scripts (tab nav, keyboard, filtering, selection, submission, POM)
+  + README, (5) API automation (schema, types, BCP-47 locale, suggestion_list
+  filtering, ≥2 negative), (6) AI-usage reflection.
+
+  Before planning, four things I shouldn't guess:
+
+⏺ User answered Claude's questions:
+  ⎿  · Which stack for the Playwright (point 4) and API (point 5) scripts? → 
+     Python + pytest-playwright
+     · test.com doesn't exist — how should the scripts be made "executable" as 
+     the assignment demands? → Local HTML fixture + route mock
+     · How should the deliverable files be laid out? → Exactly the PDF's 
+     submission structure
+     · Point 6 asks what AI tools you used, what you changed, and what the AI 
+     got wrong. How should I handle it? → Fill it from this session
+
+⏺ Two last decisions:
+
+⏺ User answered Claude's questions:
+  ⎿  · The PDF structure includes two docs that aren't Practical Exercise points
+     (1-requirement-analysis.md, 8-architecture-discussion.md). Include them? →
+     Include both, brief
+     · Point 5's API tests need something to call. What should they hit? → 
+     stdlib http.server stub
+
+⏺ Updated plan
+  ⎿  /plan to preview
+
+⏺ User approved Claude's plan
+  ⎿  Plan saved to: 
+     ~/.claude/plans/analyze-this-document-practical-glittery-lagoon.md · /plan 
+     to edit
+     SatSure SDET Assignment — Practical Exercise Deliverables
+
+     Context
+
+     _Practical Assignment_SDET.pdf describes an Autocomplete web form (login →
+     form with title, text
+     input, suggestion <ul>, Next button, error span, success div) at
+     https://test.com/autocomplete-form,
+     with FR-01…FR-05 and a test environment of Chrome/Windows 10, user
+     test123@gmail.com, India IST
+     (UTC+05:30). The Practical Exercise section has 6 points; the deliverable
+     is a Git repo in the
+     exact structure the PDF prescribes. Nothing exists in this directory yet
+     apart from the PDF.
+
+     Point-to-file mapping (each point gets its own file, per the request):
+
+     ┌──────────────────────────────────┬─────────────────────────────────┐
+     │              Point               │           Deliverable           │
+     ├──────────────────────────────────┼─────────────────────────────────┤
+     │ 1 — top 10 risk-ranked scenarios │ docs/2-test-scenarios.md        │
+     ├──────────────────────────────────┼─────────────────────────────────┤
+     │ 2 — discrepancies vs FR-05       │ docs/3-defect-identification.md │
+     ├──────────────────────────────────┼─────────────────────────────────┤
+     │ 3 — ≥8 detailed test cases       │ docs/4-test-cases.md            │
+     ├──────────────────────────────────┼─────────────────────────────────┤
+     │ 4 — Playwright scripts + README  │ tests/ui/**, README.md          │
+     ├──────────────────────────────────┼─────────────────────────────────┤
+     │ 5 — API automation scripts       │ tests/api/**                    │
+     ├──────────────────────────────────┼─────────────────────────────────┤
+     │ 6 — AI usage reflection          │ docs/7-ai-reflection.md         │
+     └──────────────────────────────────┴─────────────────────────────────┘
+
+     Confirmed decisions: Python + pytest-playwright; scripts made genuinely
+     runnable via a local
+     HTML fixture + route mock (UI) and a stdlib http.server stub (API); repo
+     laid out exactly
+     as the PDF's tree, including the two docs that aren't Practical Exercise
+     points (1-requirement-analysis.md,
+     8-architecture-discussion.md) kept brief; point 6 written factually from 
+     this session with
+     placeholders flagged.
+
+     Guardrails from the request: not exhaustive — hit the stated minimums, no
+     padding; lean on built-in
+     libraries (pytest, Playwright's expect/page.route/--base-url, jsonschema,
+     stdlib
+     http.server/json/datetime/re) instead of hand-rolled helpers.
+
+     Files to create
+
+     README.md                                  # setup, deps, how to run (point
+     4 requirement)
+     requirements.txt                            # pytest, pytest-playwright,
+     requests, jsonschema
+     pytest.ini                                  # testpaths, markers (ui/api)
+     docs/1-requirement-analysis.md              # brief: FR-01..05 restated +
+     open questions
+     docs/2-test-scenarios.md                    # POINT 1
+     docs/3-defect-identification.md             # POINT 2
+     docs/4-test-cases.md                        # POINT 3
+     docs/7-ai-reflection.md                     # POINT 6
+     docs/8-architecture-discussion.md           # brief: framework layering,
+     CI, scaling
+     tests/ui/config/conftest.py                 # base_url + webServer-style
+     fixture, API route mock
+     tests/ui/config/autocomplete-form.html      # test double built from the
+     PDF's exact HTML
+     tests/ui/pages/autocomplete_page.py         # Page Object (point 4's "POM
+     or equivalent")
+     tests/ui/tests/test_autocomplete_form.py    # POINT 4 tests
+     tests/api/tests/conftest.py                 # stdlib http.server stub
+     fixture
+     tests/api/tests/contract_schema.py          # JSON Schema for FR-05
+     (declarative, no custom logic)
+     tests/api/tests/test_response_contract.py   # POINT 5 tests
+
+     Point 1 — docs/2-test-scenarios.md
+
+     Exactly 10 rows, ranked highest→lowest risk, each with one-line summary,
+     risk level, one-sentence
+     rationale. Ranking driven by the defects point 2 surfaces (data-contract
+     correctness outranks
+     cosmetic UI), e.g. completed type integrity, timestamp timezone
+     correctness, locale format,
+     suggestion_list contents, submission persistence/200, prefix vs
+     match-anywhere filtering, free-text
+     submission, keyboard-only flow, error message on invalid input, suggestion
+     click population.
+
+     Point 2 — docs/3-defect-identification.md
+
+     Table of every discrepancy between the given GET response and FR-05, each
+     with: field, expected per
+     FR-05, actual, severity, why. Findings to document:
+
+     1. "completed": "true" — string, FR-05 requires Boolean.
+     2. "locale": "en" — not IETF BCP 47 with region; expected en-IN for the
+        stated environment.
+     3. start_date / end_date end in Z (UTC) — FR-05 requires the user's local 
+        time; expected
+        +05:30 offsets (10:30:00Z → 16:00:00+05:30).
+     4. suggestion_list returns all three suggestions after selecting "agile 
+        methodology", while point
+        5(d) states it must contain only matching suggestions — recorded
+        together with the genuine
+        ambiguity that under prefix-match all three do match the selected value,
+        so the defect is stated
+        against the 5(d) reading and the ambiguity raised as an open question.
+     5. Ambiguities, listed separately from defects: account_id as string vs
+        numeric (FR-05 gives no
+        type), and ", " separator with a space where FR-05 says comma-separated.
+     6. Explicitly note all 8 contract properties are present — no missing/extra
+        fields.
+
+     Point 3 — docs/4-test-cases.md
+
+     8 test cases (the stated minimum, no more), each with ID / Title /
+     Preconditions / numbered Test
+     Steps / Expected Results / Test Data. Split 5 UI + 3 API so both behaviours
+     are covered, traced back
+     to scenario IDs from point 1 and defect IDs from point 2 with a one-line
+     traceability column.
+
+     Point 4 — tests/ui/** + README.md
+
+     - autocomplete-form.html: the PDF's markup verbatim (same ids/classes/text)
+       plus ~40 lines of
+       inline JS to make it behave — prefix filter on input, click-to-select,
+       Enter submits, Escape clears
+       and hides suggestions, fetch POST then show success/error. It is a test 
+       double, called out as
+       such in the README; BASE_URL env var repoints the suite at the real app.
+     - conftest.py: session fixture serving tests/ui/config/ over http.server;
+       base_url fixture;
+       an autouse page.route fixture stubbing the submit endpoint with 200 (and
+       a parametrised failure
+       case) so no custom HTTP client is written.
+     - autocomplete_page.py: one Page Object — locators for label, input,
+       suggestion items, Next button,
+       error span, success container; methods open, type_value,
+       visible_suggestions,
+       click_suggestion, press_tab/press_enter/press_escape, submit. Playwright
+       locators +
+       expect auto-waiting only; no sleeps, no custom wait helpers.
+     - test_autocomplete_form.py: one test per required bullet — tab navigation,
+       keyboard interaction
+       (Enter submit / Escape clear), suggestion filtering (appear and
+       disappear), suggestion selection
+       populates input, form submission success and error message. ~6 tests.
+     - README.md: prerequisites, pip install -r requirements.txt, playwright 
+       install chromium,
+       pytest, pytest -m ui / -m api, BASE_URL/API_BASE_URL overrides, repo map,
+       and the
+       test-double caveat.
+
+     Point 5 — tests/api/**
+
+     - conftest.py: fixture starting a stdlib http.server on an ephemeral port
+       that serves the PDF's
+       exact JSON at the happy path plus routes for the negative variants (field
+       removed, wrong type);
+       API_BASE_URL env var swaps in a real API. Requests made with requests.
+     - contract_schema.py: a single JSON Schema dict covering all 8 FR-05
+       properties — required for
+       presence, "type": "boolean" for completed, "format": "date-time" for the
+       timestamps, a
+       BCP-47 pattern for locale — validated by jsonschema with format_checker
+       enabled, so type
+       and format assertions are declarative rather than hand-written.
+     - test_response_contract.py: (a) schema match, (b) data types incl.
+       offset-aware timestamp parsed
+       with datetime.fromisoformat and asserted non-UTC per FR-05, (c) BCP-47
+       locale incl. region
+       subtag, (d) suggestion_list split and asserted to contain only
+       suggestions matching the selected
+       value, (e) 2 negative tests — missing required field and completed as
+       string — asserted to fail
+       validation. ~6 tests; the tests against the PDF's payload are expected to
+       fail, which is the
+       point, so they are marked xfail(strict=True) with the defect ID in the
+       reason and the README
+       explains that a green run means the documented defects still reproduce.
+
+     Point 6 — docs/7-ai-reflection.md
+
+     (a) Tools used: Claude Code (Opus 5) in this session. (b) Usage areas:
+     extracting the PDF's text when
+     no PDF tooling was installed, drafting scenarios/test cases/scripts. (c) ≥2
+     modifications with
+     reasoning — to be written from what actually happens during implementation,
+     seeded by the two real
+     ones so far: the first extraction pass decoded font subset data as text and
+     had to be redone against
+     the content streams with the CID→char offset, and the suggestion_list
+     finding needed the
+     prefix-match ambiguity separated from the defect rather than reported
+     flatly. (d) ≥1 AI limitation.
+     Any claim I cannot source from this session is left as an explicit
+     TODO(you) rather than invented.
+
+     Out of scope (flagged, not built)
+
+     The PDF's Submission note also demands prompt file(s) and the complete JSON
+     transcript of the AI
+     conversation. That is the submission wrapper, not a Practical Exercise
+     point, and the transcript must
+     come from your own session export — I'll note it in README.md as a
+     pre-submission checklist item.
+
+     Verification
+
+     pip install -r requirements.txt
+     playwright install chromium
+     pytest -m ui      # ~6 UI tests green against the local fixture
+     pytest -m api     # ~6 API tests: negatives green, contract xfails 
+     reproduce documented defects
+     pytest            # whole suite, no network access required
+
+     Docs verified by reading each against the PDF section it answers: 10
+     scenarios with all three
+     sub-parts, every FR-05 field accounted for in the defect table, 8 test
+     cases with all seven required
+     fields, all six Playwright coverage bullets present as tests, all five API
+     requirements present.
+
+  Ran 9 shell commands (ctrl+o to expand)
+
+⏺ Now the UI tests (point 4):
+
+  Ran 4 shell commands (ctrl+o to expand)
+
+⏺ Now pytest config, deps, and root conftest:
+
+  Ran 7 shell commands (ctrl+o to expand)
+
+⏺ Everything's in place and the suite runs green: 18 passed, 6 xfailed (pytest).
+
+  Files, one per Practical Exercise point
+
+  ┌─────────────────────┬───────────────────────────────────────────────────┐
+  │        Point        │                       File                        │
+  ├─────────────────────┼───────────────────────────────────────────────────┤
+  │ 1 — top 10          │ docs/2-test-scenarios.md — 10 rows with summary,  │
+  │ risk-ranked         │ risk level, rationale + FR coverage map           │
+  │ scenarios           │                                                   │
+  ├─────────────────────┼───────────────────────────────────────────────────┤
+  │ 2 — discrepancies   │ docs/3-defect-identification.md — DEF-01…05 + 3   │
+  │ vs FR-05            │ ambiguities                                       │
+  ├─────────────────────┼───────────────────────────────────────────────────┤
+  │ 3 — detailed test   │ docs/4-test-cases.md — 8 cases (5 UI, 3 API), all │
+  │ cases               │  7 required fields, traceability table            │
+  ├─────────────────────┼───────────────────────────────────────────────────┤
+  │ 4 — Playwright      │ tests/ui/{pages,tests,config} + README.md         │
+  │ scripts             │                                                   │
+  ├─────────────────────┼───────────────────────────────────────────────────┤
+  │ 5 — API automation  │ tests/api/tests/                                  │
+  ├─────────────────────┼───────────────────────────────────────────────────┤
+  │ 6 — AI reflection   │ docs/7-ai-reflection.md                           │
+  └─────────────────────┴───────────────────────────────────────────────────┘
+
+  Plus docs/1-requirement-analysis.md, docs/8-architecture-discussion.md,
+  requirements.txt, pytest.ini, .gitignore — repo tree matches the PDF's
+  prescribed structure.
+
+  The five defects found in the sample response
+
+  completed: "true" (string, not Boolean) · start_date/end_date in UTC Z instead
+  of IST local (16:00:00+05:30) · locale: "en" missing the -IN region ·
+  suggestion_list returning all three suggestions. All 8 contract properties are
+  present — every finding is a type/value/format defect. Each is encoded as an
+  xfail(strict=True) test, so the suite is green while the defect reproduces and
+  breaks loudly once fixed.
+
+  Runnability
+
+  Python http.server serves the PDF's HTML verbatim (+ ~40 lines of JS) for the
+  UI suite, with page.route stubbing the submit call; a second http.server stub
+  serves the exact assignment JSON plus a corrected variant and three malformed
+  ones for the API suite. BASE_URL/API_BASE_URL repoint the identical suite at
+  the real environment.
+
+  Two things to check before you submit:
+
+  1. docs/7-ai-reflection.md has one TODO(you) — I only claimed Claude Code,
+     since that's all this session can attest to. Add any other tool you used.
+  2. The PDF's Submission note also requires your prompt file(s) and the full
+     JSON transcript of the AI conversation. That has to come from your own
+     session export — it's a checklist item at the bottom of the README, not
+     something I could generate.
+
+  I created a .venv/ here to verify the suite; it's gitignored. The repo isn't a
+  git repo yet — say the word and I'll git init and commit.
+
+✻ Sautéed for 12m 12s · done 1:38 PM
